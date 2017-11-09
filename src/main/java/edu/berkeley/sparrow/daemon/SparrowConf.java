@@ -31,6 +31,9 @@ public class SparrowConf {
   public final static String SCHEDULER_STATE_THRIFT_THREADS =
       "scheduler.state.thrift.threads";
 
+  public final static String WORKER_SPEED = "worker.speed";
+  public final static int DEFAULT_WORKER_SPEED= 2;
+
   /**
    * Whether the scheduler should cancel outstanding reservations when all of a job's tasks have
    * been scheduled.  Should be set to "true" or "false".

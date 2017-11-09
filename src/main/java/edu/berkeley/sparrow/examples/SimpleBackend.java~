@@ -44,9 +44,6 @@ import edu.berkeley.sparrow.thrift.NodeMonitorService.Client;
 import edu.berkeley.sparrow.thrift.TFullTaskId;
 import edu.berkeley.sparrow.thrift.TUserGroupInfo;
 
-
-import edu.berkeley.sparrow.daemon.SparrowConf;
-
 /**
  * A prototype Sparrow backend that runs sleep tasks.
  */
@@ -54,7 +51,7 @@ public class SimpleBackend implements BackendService.Iface {
 
   private static final String LISTEN_PORT = "listen_port";
   private static final int DEFAULT_LISTEN_PORT = 20101;
-//  private static final int DEFAULT_WORKER_SPEED = 2;
+  private static final int DEFAULT_WORKER_SPEED = 2;
 
   /**
    * Each task is launched in its own thread from a thread pool with WORKER_THREADS threads,
@@ -63,12 +60,13 @@ public class SimpleBackend implements BackendService.Iface {
   private static final int WORKER_THREADS = 1;
   private static final String APP_ID = "sleepApp";
 
-  private static int Worker_Speed ;
+//  private static int Worker_Speed = 2;
 
   /** Configuration parameters to specify where the node monitor is running. */
   private static final String NODE_MONITOR_HOST = "node_monitor_host";
   private static final String DEFAULT_NODE_MONITOR_HOST = "localhost";
   private static String NODE_MONITOR_PORT = "node_monitor_port";
+  private static String WORKER_SPEED = "worker.speed";
 
   private static Client client;
 
@@ -125,14 +123,14 @@ public class SimpleBackend implements BackendService.Iface {
     @Override
     public void run() {
       long startTime = System.currentTimeMillis();
-//      LOG.debug("Wait Time for "+ taskId.getTaskId() +" : " + (startTime - taskStartTime));
+      LOG.debug("Wait Time for "+ taskId.getTaskId() +" : " + (startTime - taskStartTime));
 
       try {
         Thread.sleep(taskDurationMillis);
       } catch (InterruptedException e) {
         LOG.error("Interrupted while sleeping: " + e.getMessage());
       }
-      LOG.debug("Response Time for " + taskId.taskId +" : " +(System.currentTimeMillis() - taskStartTime));
+///      LOG.debug("Response Time for " + taskId.taskId +" : " +(System.currentTimeMillis() - taskStartTime));
 ///      LOG.debug("Task completed in " + (System.currentTimeMillis() - startTime) + "ms");
       finishedTasks.add(taskId);
     }
@@ -200,7 +198,7 @@ public class SimpleBackend implements BackendService.Iface {
     BackendService.Processor<BackendService.Iface> processor =
         new BackendService.Processor<BackendService.Iface>(protoBackend);
 
-    Worker_Speed = conf.getInt(SparrowConf.WORKER_SPEED,SparrowConf.DEFAULT_WORKER_SPEED);
+    Worker_Speed = conf.getInt(WORKER_SPEED,DEFAULT_WORKER_SPEED);
     int listenPort = conf.getInt(LISTEN_PORT, DEFAULT_LISTEN_PORT);
     int nodeMonitorPort = conf.getInt(NODE_MONITOR_PORT, NodeMonitorThrift.DEFAULT_NM_THRIFT_PORT);
     String nodeMonitorHost = conf.getString(NODE_MONITOR_HOST, DEFAULT_NODE_MONITOR_HOST);

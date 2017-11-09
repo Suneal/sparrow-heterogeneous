@@ -24,6 +24,7 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
+//import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
@@ -72,11 +73,12 @@ public class TClients {
 
   public static SchedulerService.Client createBlockingSchedulerClient(
       String host, int port, int timeout) throws IOException {
-    TTransport tr = new TFramedTransport(new TSocket(host, port, timeout));
+    TTransport tr = new TFramedTransport(new TSocket("127.0.0.1", 20503, 0));
     try {
       tr.open();
     } catch (TTransportException e) {
       LOG.warn("Error creating scheduler client to " + host + ":" + port);
+      LOG.warn(e.getMessage());
       throw new IOException(e);
     }
     TProtocol proto = new TBinaryProtocol(tr);
@@ -101,6 +103,7 @@ public class TClients {
       tr.open();
     } catch (TTransportException e) {
       LOG.warn("Error creating scheduler client to " + host + ":" + port);
+      LOG.warn(e.getMessage());
       throw new IOException(e);
     }
     TProtocol proto = new TBinaryProtocol(tr);

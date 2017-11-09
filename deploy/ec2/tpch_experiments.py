@@ -18,7 +18,8 @@ import os
 import subprocess
 import time
 
-num_nodes = 100
+num_nodes = 2
+print "num_bodes", num_nodes
 wait_delay = 20 * 60
 results_dirname = "results_per_task"
 partitions = 33

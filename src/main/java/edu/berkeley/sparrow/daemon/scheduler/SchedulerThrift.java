@@ -40,7 +40,7 @@ import edu.berkeley.sparrow.thrift.TTaskLaunchSpec;
  */
 public class SchedulerThrift implements SchedulerService.Iface, GetTaskService.Iface {
   // Defaults if not specified by configuration
-  public final static int DEFAULT_SCHEDULER_THRIFT_PORT = 20503;
+  public final static int DEFAULT_SCHEDULER_THRIFT_PORT = 20503; //20503;
   private final static int DEFAULT_SCHEDULER_THRIFT_THREADS = 8;
   public final static int DEFAULT_GET_TASK_PORT = 20507;
 

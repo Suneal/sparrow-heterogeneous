@@ -250,7 +250,9 @@ public class ProtoFrontend implements FrontendService.Iface {
       SparrowFrontendClient client = new SparrowFrontendClient();
       int schedulerPort = conf.getInt("scheduler_port",
           SchedulerThrift.DEFAULT_SCHEDULER_THRIFT_PORT);
-      client.initialize(new InetSocketAddress("localhost", schedulerPort), APPLICATION_ID, this);
+
+      //LOG.info("schedulerPort: "+ 12345); 
+      client.initialize(new InetSocketAddress("172.31.38.20",22), APPLICATION_ID, this);
 
       if (warmupDurationS > 0) {
         LOG.debug("Warming up for " + warmupDurationS + " seconds at arrival rate of " +

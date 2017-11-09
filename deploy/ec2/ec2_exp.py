@@ -29,7 +29,7 @@ from optparse import OptionParser
 def parse_args(force_action=True):
   parser = OptionParser(usage="sparrow-exp <action> <cluster> [options]" +
     "\n\n<action> can be: launch, deploy, start-sparrow, stop-sparrow, start-proto, stop-proto, start-hdfs, stop-hdfs, start-sparrow-throughput, start-spark-shark, stop-spark, restart-spark-shark, command, collect-logs, destroy, login-fe, login-be, create-database, create-tpch-tables, start-shark-tpch")
-  parser.add_option("-z", "--zone", default="us-east-1d",
+  parser.add_option("-z", "--zone", default="us-east-1",
       help="Availability zone to launch instances in")
   parser.add_option("-a", "--ami", default="ami-533a733a",
       help="Amazon Machine Image ID to use (use ami-894801e0 for HVM instance types)")
@@ -194,8 +194,13 @@ def launch_cluster(conn, opts, cluster_name):
 
   print "Launching instances..."
   try:
+    #print "get all images", conn.get_all_images()   
+    print "what is opts.ami", opts.ami
     image = conn.get_all_images(image_ids=[opts.ami])[0]
+    print "image", image  
+    #print opts.ami,"**************"
   except:
+    print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     print >> sys.stderr, "Could not find AMI " + opts.ami
     sys.exit(1)
   if opts.spot_price != None:

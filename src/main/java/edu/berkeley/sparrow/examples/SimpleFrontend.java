@@ -145,7 +145,7 @@ public class SimpleFrontend implements FrontendService.Iface {
           SchedulerThrift.DEFAULT_SCHEDULER_THRIFT_PORT);
       String schedulerHost = conf.getString(SCHEDULER_HOST, DEFAULT_SCHEDULER_HOST);
       client = new SparrowFrontendClient();
-      client.initialize(new InetSocketAddress(schedulerHost, schedulerPort), APPLICATION_ID, this);
+      client.initialize(new InetSocketAddress("127.0.0.1",schedulerPort), APPLICATION_ID, this);
 
       JobLaunchRunnable runnable = new JobLaunchRunnable(tasksPerJob, taskDurationMillis);
       ScheduledThreadPoolExecutor taskLauncher = new ScheduledThreadPoolExecutor(1);
