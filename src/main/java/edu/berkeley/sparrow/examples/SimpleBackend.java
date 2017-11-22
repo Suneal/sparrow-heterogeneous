@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import edu.berkeley.sparrow.daemon.util.Logging;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
@@ -55,6 +56,7 @@ public class SimpleBackend implements BackendService.Iface {
   private static final String LISTEN_PORT = "listen_port";
   private static final int DEFAULT_LISTEN_PORT = 20101;
 //  private static final int DEFAULT_WORKER_SPEED = 2;
+  private final static Logger AUDIT_LOG = Logging.getCustomAuditLogger(SimpleFrontend.class);
 
   /**
    * Each task is launched in its own thread from a thread pool with WORKER_THREADS threads,
@@ -125,14 +127,15 @@ public class SimpleBackend implements BackendService.Iface {
     @Override
     public void run() {
       long startTime = System.currentTimeMillis();
-//      LOG.debug("Wait Time for "+ taskId.getTaskId() +" : " + (startTime - taskStartTime));
+      LOG.debug("Wait Time for "+ taskId.getTaskId() + " Worker Speed " + Worker_Speed +" : " + (startTime - taskStartTime));
+      AUDIT_LOG.info(Logging.auditEventString("waiting_time", taskId.getTaskId(), (startTime - taskStartTime)));
 
       try {
         Thread.sleep(taskDurationMillis);
       } catch (InterruptedException e) {
         LOG.error("Interrupted while sleeping: " + e.getMessage());
       }
-      LOG.debug("Response Time for " + taskId.taskId +" : " +(System.currentTimeMillis() - taskStartTime));
+///      LOG.debug("Response Time for " + taskId.taskId +" : " +(System.currentTimeMillis() - taskStartTime));
 ///      LOG.debug("Task completed in " + (System.currentTimeMillis() - startTime) + "ms");
       finishedTasks.add(taskId);
     }
@@ -186,6 +189,7 @@ public class SimpleBackend implements BackendService.Iface {
     BasicConfigurator.configure();
     LOG.setLevel(Level.DEBUG);
     LOG.debug("debug logging on");
+    Logging.configureAuditLoggingCustom();
 
     Configuration conf = new PropertiesConfiguration();
 

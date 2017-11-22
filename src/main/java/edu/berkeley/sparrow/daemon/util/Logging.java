@@ -30,7 +30,9 @@ import com.google.common.base.Joiner;
 
 public class Logging {
   public final static String AUDIT_LOGGER_NAME = "audit";
+  public final static String CUSTOM_AUDIT_LOGGER_NAME = "custom_audit";
   public final static String AUDIT_LOG_FILENAME_FORMAT = "sparrow_audit.%d.%d.log";
+  public final static String CUSTOM_AUDIT_LOG_FILENAME_FORMAT = "custom_audit.%d.%d.log";
   public final static String AUDIT_LOG_FORMAT = "%c\t%m%n";
 
   private static Joiner paramJoiner = Joiner.on(",").useForNull("null");
@@ -62,7 +64,23 @@ public class Logging {
     auditLogger.setAdditivity(false);
   }
 
-  /** Returns the total count of garbage collections. */
+  public static void configureAuditLoggingCustom() throws IOException {
+    PatternLayout layout = new PatternLayout(AUDIT_LOG_FORMAT);
+    // This assumes that no other daemon will be started within 1 millisecond.
+    String filename = String.format(CUSTOM_AUDIT_LOG_FILENAME_FORMAT,
+            System.currentTimeMillis(), new Random().nextInt(Integer.MAX_VALUE));
+    FileAppender fileAppender = new FileAppender(layout, filename);
+    Logger auditLogger = Logger.getLogger(Logging.CUSTOM_AUDIT_LOGGER_NAME);
+    auditLogger.addAppender(fileAppender);
+    auditLogger.setLevel(Level.ALL);
+ /*
+     * We don't want audit messages to be appended to the main appender, which
+     * is intended for potentially user-facing messages.
+     */
+    auditLogger.setAdditivity(false);
+  }
+
+ /** Returns the total count of garbage collections. */
   public static long getGCCount() {
     long totalGarbageCollections = 0;
 
@@ -106,6 +124,13 @@ public class Logging {
     return Logger.getLogger(String.format("%s.%s", AUDIT_LOGGER_NAME,
         clazz.getName()));
   }
+
+  @SuppressWarnings("rawtypes")
+  public static Logger getCustomAuditLogger(Class clazz) {
+    return Logger.getLogger(String.format("%s.%s", CUSTOM_AUDIT_LOGGER_NAME,
+            clazz.getName()));
+  }
+
 
   /**
    * Return a function name (determined via reflection) and all its parameters
